@@ -68,17 +68,18 @@ let buyerAddress = document.getElementById("buyerAddress");
 // array to keep track of the orders in the shopping cart
 let orders = [];
 
+// variable for the database connection
+let db;
 async function initDB() {
-    // open connection to database
-    db = await $BSD.db.open("ecommerce");
-    
-    // save data to the database as a key-value pair
-    db.set("allProducts", initialData).then(function() {
-        //alert("Data saved.");
-
-        // call getAllProducts function
-        getAllProducts();
-    });
+// open connection to database
+db = await $BSD.db.open("ecommerce");
+// only add the starting products if the database is still empty
+let existingProducts = await db.get("allProducts");
+if (existingProducts == null) {
+await db.set("allProducts", initialData);
+}
+// show the products
+getAllProducts();
 }
 
 function getAllProducts() {
